@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "6D4ECE17-D3FE-49BD-9B58-9D157972B547",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:LPERR.xcodeproj",
+      "identifier" : "9814F8222B698CF700B9DBA6",
+      "name" : "LPERR"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:LPERR.xcodeproj",
+        "identifier" : "980357492B7F693400919350",
+        "name" : "LPERREndToEndTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:LPERR.xcodeproj",
+        "identifier" : "9814F8382B698CF800B9DBA6",
+        "name" : "LPERRTests"
+      }
+    }
+  ],
+  "version" : 1
+}
