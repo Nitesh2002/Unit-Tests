@@ -1,37 +1,37 @@
 {
   "configurations" : [
     {
-      "id" : "6D4ECE17-D3FE-49BD-9B58-9D157972B547",
+      "id" : "4BABC5D2-9C4F-411E-B9C8-98D27DE471DC",
       "name" : "Test Scheme Action",
       "options" : {
         "testExecutionOrdering" : "random",
-        "threadSanitizerEnabled" : true
+        "threadSanitizerEnabled" : false
       }
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "targetForVariableExpansion" : {
       "containerPath" : "container:LPERR.xcodeproj",
       "identifier" : "9814F8222B698CF700B9DBA6",
       "name" : "LPERR"
-    }
+    },
+    "threadSanitizerEnabled" : true
   },
   "testTargets" : [
     {
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:LPERR.xcodeproj",
-        "identifier" : "980357492B7F693400919350",
-        "name" : "LPERREndToEndTests"
+        "identifier" : "9814F8382B698CF800B9DBA6",
+        "name" : "LPERRTests"
       }
     },
     {
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:LPERR.xcodeproj",
-        "identifier" : "9814F8382B698CF800B9DBA6",
-        "name" : "LPERRTests"
+        "identifier" : "980357492B7F693400919350",
+        "name" : "LPERREndToEndTests"
       }
     }
   ],

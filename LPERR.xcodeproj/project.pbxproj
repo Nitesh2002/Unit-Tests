@@ -64,6 +64,7 @@
 		9814F8392B698CF800B9DBA6 /* LPERRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LPERRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9814F83D2B698CF800B9DBA6 /* LPERRTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LPERRTests.swift; sourceTree = "<group>"; };
 		9814F8572B698D4200B9DBA6 /* Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
+		9818C2312B84B316003319D4 /* LPERR.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LPERR.xctestplan; sourceTree = "<group>"; };
 		982FA7A62B74E7EA00405B34 /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		982FA7A82B74E81A00405B34 /* FeedItemMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItemMapper.swift; sourceTree = "<group>"; };
 		984553362B788809000F7BA0 /* URLSssionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSssionClientTests.swift; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		9814F81A2B698CF700B9DBA6 = {
 			isa = PBXGroup;
 			children = (
+				9818C2312B84B316003319D4 /* LPERR.xctestplan */,
 				980357542B7F771100919350 /* CI.xctestplan */,
 				9814F8252B698CF700B9DBA6 /* LPERR */,
 				9814F83C2B698CF800B9DBA6 /* LPERRTests */,

@@ -188,7 +188,6 @@ class URLProtocolStub: URLProtocol {
     }
     
     override class func canInit(with request: URLRequest) -> Bool {
-        requestObserver?(request)
         return true
     }
     static func observeRequests(completion:@escaping(URLRequest) -> Void) {
@@ -199,6 +198,11 @@ class URLProtocolStub: URLProtocol {
     }
     
     override func startLoading() {
+        if let requestObserver = URLProtocolStub.requestObserver  {
+            client?.urlProtocolDidFinishLoading(self)
+            return requestObserver(request)
+           
+        }
         
         if let data = URLProtocolStub.stub?.data {
             client?.urlProtocol(self, didLoad: data)
@@ -211,8 +215,9 @@ class URLProtocolStub: URLProtocol {
         if let error = URLProtocolStub.stub?.error {
             client?.urlProtocol(self, didFailWithError: error)
         }
-        
+       
         client?.urlProtocolDidFinishLoading(self)
+        
     }
     
     override func stopLoading() {
