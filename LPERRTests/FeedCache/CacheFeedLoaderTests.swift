@@ -9,7 +9,6 @@ import XCTest
 import LPERR
 
 class FeedStore {
-    var deleteCacheCount = 0
     var deleteCacheCallCount = 0
     
     func deleteCahedFeed() {
@@ -33,14 +32,12 @@ class LocalFeedLoader {
 final class CacheFeedLoaderTests: XCTestCase {
     
     func test_init_DoesnotDeleteCacheUponCreation() {
-        let store = FeedStore()
-        let sut = LocalFeedLoader(store: store)
-        XCTAssertEqual(store.deleteCacheCount, 0)
+        let (store,_) = makeSUT()
+        XCTAssertEqual(store.deleteCacheCallCount, 0)
     }
     
     func test_save_requestCacheDeletion() {
-        let store = FeedStore()
-        let sut = LocalFeedLoader(store: store)
+        let (store,sut) = makeSUT()
         let items = [uniqueItems(), uniqueItems()]
         sut.save(items)
         XCTAssertEqual(store.deleteCacheCallCount, 1)
@@ -72,6 +69,12 @@ final class CacheFeedLoaderTests: XCTestCase {
 }
 
 extension CacheFeedLoaderTests {
+    
+    func makeSUT() -> (FeedStore, LocalFeedLoader) {
+        let store = FeedStore()
+        let sut = LocalFeedLoader(store: store)
+        return (store, sut)
+    }
     
     func uniqueItems() -> FeedItem {
         return FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())
