@@ -9,10 +9,16 @@ import XCTest
 import LPERR
 
 class FeedStore {
+    
     var deleteCacheCallCount = 0
+    var insertCallCount = 0
     
     func deleteCahedFeed() {
         deleteCacheCallCount += 1
+    }
+    
+    func complete(with error: Error, at Index:Int = 0) {
+        
     }
 }
 
@@ -42,6 +48,16 @@ final class CacheFeedLoaderTests: XCTestCase {
         sut.save(items)
         XCTAssertEqual(store.deleteCacheCallCount, 1)
     }
+    
+    func test_save_doesnotInsertWhenDeletionFailedWithError() {
+        let (store,sut) = makeSUT()
+        let items = [uniqueItems(), uniqueItems()]
+        sut.save(items)
+        let error = anyNSError()
+        store.complete(with: error)
+        XCTAssertEqual(store.insertCallCount, 0)
+    }
+    
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -73,6 +89,8 @@ extension CacheFeedLoaderTests {
     func makeSUT() -> (FeedStore, LocalFeedLoader) {
         let store = FeedStore()
         let sut = LocalFeedLoader(store: store)
+        trackMemoryLeak(store)
+        trackMemoryLeak(sut)
         return (store, sut)
     }
     
@@ -82,5 +100,9 @@ extension CacheFeedLoaderTests {
     
     func anyURL() -> URL {
         return URL(string: "https://any-url.com")!
+    }
+    
+    private func anyNSError() -> NSError {
+        return NSError(domain: "any error", code: 1)
     }
 }
