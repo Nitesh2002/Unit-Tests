@@ -10,6 +10,15 @@ import LPERR
 
 final class LPERREndToEndTests: XCTestCase {
 
+//    func demo() {
+//        let cache = URLCache(memoryCapacity: 20*1000*1000, diskCapacity: 50*1000*1000)
+//        let config = URLSessionConfiguration.default
+//        config.urlCache = cache
+//        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+//        let session = URLSession(configuration: config)
+//        let request = URLRequest(url: URL("https://a-url.com/")!,cachePolicy: .returnCacheDataDontLoad,timeoutInterval: 400000)
+//    }
+    
     func test_EndtoEndServerResults_matchesTheTestAccountData() {
         
         switch getFeedResults() {

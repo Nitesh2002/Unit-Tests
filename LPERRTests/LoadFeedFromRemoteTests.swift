@@ -1,5 +1,5 @@
 //
-//  RemoteFeedLoaderTests.swift
+//  LoadFeedFromRemoteTests.swift
 //  LPERRTests
 //
 //  Created by Nitesh mishra on 05/02/24.
@@ -8,7 +8,7 @@
 import XCTest
 import LPERR
 
-class RemoteFeedLoaderTests: XCTestCase {
+class LoadFeedFromRemoteTests: XCTestCase {
     
     func test_init_doesNotRequestDataFromURL() {
         let (_,client) = makeSUT()
@@ -99,7 +99,7 @@ class RemoteFeedLoaderTests: XCTestCase {
 }
 
 // Helpers
-extension RemoteFeedLoaderTests {
+extension LoadFeedFromRemoteTests {
     
     private func expect(sut: RemoteFeedLoader, expectedResult: RemoteFeedLoader.Result, when action:() -> Void, file: StaticString = #file, line: UInt = #line) {
         
@@ -153,7 +153,7 @@ extension RemoteFeedLoaderTests {
 }
 
 // Spy
-extension RemoteFeedLoaderTests {
+extension LoadFeedFromRemoteTests {
     private class HTTPClientSpy: HTTPClient {
         
         func get(_ fromURL: URL, completion: @escaping (LPERR.HTTPClientResult) -> Void) {
