@@ -10,15 +10,28 @@ import LPERR
 
 class FeedStore {
     
+    typealias DeleteCompletion = (Error?) -> Void
+    
+    private var deleteCompletions = [DeleteCompletion]()
+    
     var deleteCacheCallCount = 0
     var insertCallCount = 0
     
-    func deleteCahedFeed() {
+    func deleteCahedFeed(completion: @escaping(DeleteCompletion)) {
         deleteCacheCallCount += 1
+        deleteCompletions.append(completion)
     }
     
-    func complete(with error: Error, at Index:Int = 0) {
-        
+    func completeDelete(with error: Error, at Index:Int = 0) {
+        deleteCompletions[Index](error)
+    }
+    
+    func completeDeleteSuccess(at Index:Int = 0) {
+        deleteCompletions[Index](nil)
+    }
+    
+    func insert(_ items: [FeedItem]) {
+        insertCallCount += 1
     }
 }
 
@@ -31,7 +44,11 @@ class LocalFeedLoader {
     }
     
     func save(_ items: [FeedItem]) {
-        store.deleteCahedFeed()
+        store.deleteCahedFeed { [unowned self] error in
+            if error == nil {
+                self.store.insert(items)
+            }
+        }
     }
 }
 
@@ -54,8 +71,16 @@ final class CacheFeedLoaderTests: XCTestCase {
         let items = [uniqueItems(), uniqueItems()]
         sut.save(items)
         let error = anyNSError()
-        store.complete(with: error)
+        store.completeDelete(with: error)
         XCTAssertEqual(store.insertCallCount, 0)
+    }
+    
+    func test_save_requestInsertWhenDeleteSucceeded() {
+        let (store,sut) = makeSUT()
+        let items = [uniqueItems(), uniqueItems()]
+        sut.save(items)
+        store.completeDeleteSuccess()
+        XCTAssertEqual(store.insertCallCount, 1)
     }
     
 
