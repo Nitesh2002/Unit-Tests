@@ -13,6 +13,7 @@ class FeedStore {
     typealias DeleteCompletion = (Error?) -> Void
     
     private var deleteCompletions = [DeleteCompletion]()
+    var insertedItems = [(items:[FeedItem], timestamp:Date)]()
     
     var deleteCacheCallCount = 0
     var insertCallCount = 0
@@ -30,23 +31,26 @@ class FeedStore {
         deleteCompletions[Index](nil)
     }
     
-    func insert(_ items: [FeedItem]) {
+    func insert(_ items: [FeedItem], timeStamp: Date) {
         insertCallCount += 1
+        insertedItems.append((items: items, timestamp: timeStamp))
     }
 }
 
 class LocalFeedLoader {
     
     let store: FeedStore
+    let currentDate: ()-> Date
     
-    init(store: FeedStore) {
+    init(store: FeedStore, currentDate: @escaping () -> Date) {
         self.store = store
+        self.currentDate = currentDate
     }
     
     func save(_ items: [FeedItem]) {
         store.deleteCahedFeed { [unowned self] error in
             if error == nil {
-                self.store.insert(items)
+                self.store.insert(items, timeStamp: self.currentDate())
             }
         }
     }
@@ -76,22 +80,25 @@ final class CacheFeedLoaderTests: XCTestCase {
     }
     
     func test_save_requestInsertWhenDeleteSucceeded() {
-        let (store,sut) = makeSUT()
+        let timestamp = Date()
+        let (store,sut) = makeSUT { timestamp }
         let items = [uniqueItems(), uniqueItems()]
         sut.save(items)
         store.completeDeleteSuccess()
-        XCTAssertEqual(store.insertCallCount, 1)
+        XCTAssertEqual(store.insertedItems.count, 1)
+        XCTAssertEqual(store.insertedItems.first?.items, items)
+        XCTAssertEqual(store.insertedItems.first?.timestamp, timestamp)
     }
     
-
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -99,21 +106,21 @@ final class CacheFeedLoaderTests: XCTestCase {
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
-
+    
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
-
+    
 }
 
 extension CacheFeedLoaderTests {
     
-    func makeSUT() -> (FeedStore, LocalFeedLoader) {
+    func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStore, LocalFeedLoader) {
         let store = FeedStore()
-        let sut = LocalFeedLoader(store: store)
+        let sut = LocalFeedLoader(store: store, currentDate: currentDate)
         trackMemoryLeak(store)
         trackMemoryLeak(sut)
         return (store, sut)
