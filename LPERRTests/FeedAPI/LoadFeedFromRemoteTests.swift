@@ -46,7 +46,7 @@ class LoadFeedFromRemoteTests: XCTestCase {
         
         statusCodes.enumerated().forEach { index,code in
             expect(sut: sut, expectedResult: .failure(RemoteFeedLoader.Error.invalidData)) {
-                client.complete(withStatusCode: code, data: makeJsonData(items: []), at: index)
+                client.complete(withStatusCode: code, data: makeJsonData(feed: []), at: index)
             }
         }
     }
@@ -63,11 +63,11 @@ class LoadFeedFromRemoteTests: XCTestCase {
     func test_load_deliversEmptyJsonDataFeedsWith200HTTPSatusCode() {
         let (sut, client) = makeSUT()
         expect(sut: sut, expectedResult: .success([])) {
-            client.complete(withStatusCode: 200, data: makeJsonData(items: []))
+            client.complete(withStatusCode: 200, data: makeJsonData(feed: []))
         }
     }
     
-    func test_load_deliversJsonItemsWoth200HTTPStatusCode() {
+    func test_load_deliversJsonfeedWoth200HTTPStatusCode() {
         let (sut, client) = makeSUT()
         let allKeyItem = makeFeedItem(id: UUID(), description: "all present", location: "all location", imageURL: URL(string: "https://a-url.com")!)
         let allKeysButDescriptionItem = makeFeedItem(id: UUID(),location: "only location", imageURL: URL(string: "https://b-url.com")!)
@@ -76,7 +76,7 @@ class LoadFeedFromRemoteTests: XCTestCase {
         
         expect(sut: sut, expectedResult: .success([allKeyItem.model,allKeysButDescriptionItem.model,allKeysButLocationItem.model,allMandatoryKeysItem.model])) {
             
-            let jsonData = makeJsonData(items: [allKeyItem.json,allKeysButDescriptionItem.json,allKeysButLocationItem.json,allMandatoryKeysItem.json])
+            let jsonData = makeJsonData(feed: [allKeyItem.json,allKeysButDescriptionItem.json,allKeysButLocationItem.json,allMandatoryKeysItem.json])
             client.complete(withStatusCode: 200, data: jsonData)
         }
     }
@@ -91,7 +91,7 @@ class LoadFeedFromRemoteTests: XCTestCase {
         
         sut = nil
         
-        client.complete(withStatusCode: 200, data: makeJsonData(items: []))
+        client.complete(withStatusCode: 200, data: makeJsonData(feed: []))
         
         XCTAssertTrue(capturedResults.isEmpty)
         
@@ -146,8 +146,8 @@ extension LoadFeedFromRemoteTests {
         return (model,json)
     }
     
-    private func makeJsonData(items: [[String: Any]]) -> Data {
-        let json = ["items": items]
+    private func makeJsonData(feed: [[String: Any]]) -> Data {
+        let json = ["items": feed]
         return try! JSONSerialization.data(withJSONObject: json)
     }
 }

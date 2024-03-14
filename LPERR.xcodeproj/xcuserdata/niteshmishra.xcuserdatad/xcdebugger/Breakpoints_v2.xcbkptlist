@@ -97,6 +97,36 @@
                   endingLineNumber = "29"
                   offsetFromSymbolStart = "200">
                </Location>
+               <Location
+                  uuid = "D7FF022F-F298-45FF-9A0A-3A79635E027F - ea237b4d7b8d89b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "LPERR.RemoteFeedLoader.load(completion: (LPERR.LoadFeedResult) -&gt; ()) -&gt; ()"
+                  moduleName = "LPERR"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERR/FeedProject/FeedAPI/RemoteFeedLoader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "D7FF022F-F298-45FF-9A0A-3A79635E027F - c96247c9b771aed1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (LPERR.HTTPClientResult) -&gt; () in LPERR.RemoteFeedLoader.load(completion: (LPERR.LoadFeedResult) -&gt; ()) -&gt; ()"
+                  moduleName = "LPERR"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERR/FeedProject/FeedAPI/RemoteFeedLoader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "100">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -145,6 +175,36 @@
                   endingLineNumber = "52"
                   offsetFromSymbolStart = "148">
                </Location>
+               <Location
+                  uuid = "499A365B-70F7-4024-AC09-F44CA5DD1161 - f8da013b6f28c97d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "LPERREndToEndTests.LPERREndToEndTests.getFeedResults(file: Swift.StaticString, line: Swift.UInt) -&gt; Swift.Optional&lt;LPERR.LoadFeedResult&gt;"
+                  moduleName = "LPERREndToEndTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERREndToEndTests/LPERREndToEndTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54"
+                  offsetFromSymbolStart = "1124">
+               </Location>
+               <Location
+                  uuid = "499A365B-70F7-4024-AC09-F44CA5DD1161 - d61449a0e0b24f4c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (LPERR.LoadFeedResult) -&gt; () in LPERREndToEndTests.LPERREndToEndTests.getFeedResults(file: Swift.StaticString, line: Swift.UInt) -&gt; Swift.Optional&lt;LPERR.LoadFeedResult&gt;"
+                  moduleName = "LPERREndToEndTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERREndToEndTests/LPERREndToEndTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "52"
+                  endingLineNumber = "52"
+                  offsetFromSymbolStart = "68">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -161,6 +221,198 @@
             startingLineNumber = "56"
             endingLineNumber = "56"
             landmarkName = "getFeedResults(file:line:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CCE539F7-E817-4A12-833E-232AF99BB96D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "expect(sut:expectedResult:when:file:line:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CCE539F7-E817-4A12-833E-232AF99BB96D - 5bd30ebe6d2cb4b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (LPERR.LoadFeedResult) -&gt; () in LPERRTests.LoadFeedFromRemoteTests.expect(sut: LPERR.RemoteFeedLoader, expectedResult: LPERR.LoadFeedResult, when: () -&gt; (), file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "208">
+               </Location>
+               <Location
+                  uuid = "CCE539F7-E817-4A12-833E-232AF99BB96D - 5bd30ebe6d2cb4b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (LPERR.LoadFeedResult) -&gt; () in LPERRTests.LoadFeedFromRemoteTests.expect(sut: LPERR.RemoteFeedLoader, expectedResult: LPERR.LoadFeedResult, when: () -&gt; (), file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "268">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "49222CAF-61B9-49EE-B666-38746600DA43"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "expect(sut:expectedResult:when:file:line:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "49222CAF-61B9-49EE-B666-38746600DA43 - 5e69618b00d4e181"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "LPERRTests.LoadFeedFromRemoteTests.expect(sut: LPERR.RemoteFeedLoader, expectedResult: LPERR.LoadFeedResult, when: () -&gt; (), file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "108"
+                  endingLineNumber = "108"
+                  offsetFromSymbolStart = "392">
+               </Location>
+               <Location
+                  uuid = "49222CAF-61B9-49EE-B666-38746600DA43 - 5bd30ebe6d2cbc7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (LPERR.LoadFeedResult) -&gt; () in LPERRTests.LoadFeedFromRemoteTests.expect(sut: LPERR.RemoteFeedLoader, expectedResult: LPERR.LoadFeedResult, when: () -&gt; (), file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "108"
+                  endingLineNumber = "108"
+                  offsetFromSymbolStart = "152">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FA46809E-AE8E-40FC-8619-BA6B96479C6A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "expect(sut:expectedResult:when:file:line:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "01569844-A037-4CF8-B895-A7FF377CD2CA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "test_load_deliversEmptyJsonDataFeedsWith200HTTPSatusCode()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "01569844-A037-4CF8-B895-A7FF377CD2CA - 765b39b0d0bd715e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "LPERRTests.LoadFeedFromRemoteTests.test_load_deliversEmptyJsonDataFeedsWith200HTTPSatusCode() -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "65"
+                  endingLineNumber = "65"
+                  offsetFromSymbolStart = "196">
+               </Location>
+               <Location
+                  uuid = "01569844-A037-4CF8-B895-A7FF377CD2CA - e2bd31e127788f8f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in LPERRTests.LoadFeedFromRemoteTests.test_load_deliversEmptyJsonDataFeedsWith200HTTPSatusCode() -&gt; ()"
+                  moduleName = "LPERRTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/niteshmishra/Documents/IOS/LPERR/LPERRTests/FeedAPI/LoadFeedFromRemoteTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "65"
+                  endingLineNumber = "65"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DFE4716F-D87D-4EA3-B085-23BEF8BC3DAE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERR/FeedProject/FeedAPI/RemoteFeedLoader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "map(_:from:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "06D351AE-8902-4DDC-BF1A-04AB8B908F43"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LPERR/FeedProject/FeedAPI/RemoteFeedLoader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "map(_:from:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

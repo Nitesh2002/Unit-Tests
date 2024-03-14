@@ -8,86 +8,91 @@
 import XCTest
 import LPERR
 
-class FeedStore {
-    
-    typealias DeleteCompletion = (Error?) -> Void
-    
-    private var deleteCompletions = [DeleteCompletion]()
-    var insertedItems = [(items:[FeedItem], timestamp:Date)]()
-    
-    var deleteCacheCallCount = 0
-    var insertCallCount = 0
-    
-    func deleteCahedFeed(completion: @escaping(DeleteCompletion)) {
-        deleteCacheCallCount += 1
-        deleteCompletions.append(completion)
-    }
-    
-    func completeDelete(with error: Error, at Index:Int = 0) {
-        deleteCompletions[Index](error)
-    }
-    
-    func completeDeleteSuccess(at Index:Int = 0) {
-        deleteCompletions[Index](nil)
-    }
-    
-    func insert(_ items: [FeedItem], timeStamp: Date) {
-        insertCallCount += 1
-        insertedItems.append((items: items, timestamp: timeStamp))
-    }
-}
-
-class LocalFeedLoader {
-    
-    let store: FeedStore
-    let currentDate: ()-> Date
-    
-    init(store: FeedStore, currentDate: @escaping () -> Date) {
-        self.store = store
-        self.currentDate = currentDate
-    }
-    
-    func save(_ items: [FeedItem]) {
-        store.deleteCahedFeed { [unowned self] error in
-            if error == nil {
-                self.store.insert(items, timeStamp: self.currentDate())
-            }
-        }
-    }
-}
-
 final class CacheFeedLoaderTests: XCTestCase {
     
-    func test_init_DoesnotDeleteCacheUponCreation() {
+    func test_init_DoesnotMessageUponCreation() {
         let (store,_) = makeSUT()
-        XCTAssertEqual(store.deleteCacheCallCount, 0)
+        XCTAssertEqual(store.receivedMessages, [])
     }
     
     func test_save_requestCacheDeletion() {
         let (store,sut) = makeSUT()
-        let items = [uniqueItems(), uniqueItems()]
-        sut.save(items)
-        XCTAssertEqual(store.deleteCacheCallCount, 1)
+        sut.save(uniqueTouplefeed().local) { _ in }
+        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed])
     }
     
     func test_save_doesnotInsertWhenDeletionFailedWithError() {
         let (store,sut) = makeSUT()
-        let items = [uniqueItems(), uniqueItems()]
-        sut.save(items)
+        sut.save(uniqueTouplefeed().local) { _ in }
         let error = anyNSError()
         store.completeDelete(with: error)
-        XCTAssertEqual(store.insertCallCount, 0)
+        
+        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed])
     }
     
     func test_save_requestInsertWhenDeleteSucceeded() {
         let timestamp = Date()
         let (store,sut) = makeSUT { timestamp }
-        let items = [uniqueItems(), uniqueItems()]
-        sut.save(items)
+        let feed = uniqueTouplefeed().local
+        sut.save(feed) { _ in }
         store.completeDeleteSuccess()
-        XCTAssertEqual(store.insertedItems.count, 1)
-        XCTAssertEqual(store.insertedItems.first?.items, items)
-        XCTAssertEqual(store.insertedItems.first?.timestamp, timestamp)
+        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed, .insert(feed, timestamp)])
+    }
+    
+    func test_save_failsUponDeletionError() {
+        let (store,sut) = makeSUT()
+        let error = anyNSError()
+        expect(sut, completewithError: anyNSError()) {
+            store.completeDelete(with: error)
+        }
+    }
+    
+    func test_save_failsToInsertWithError() {
+        let (store,sut) = makeSUT()
+        let error = anyNSError()
+        expect(sut, completewithError: anyNSError()) {
+            store.completeDeleteSuccess()
+            store.completeInsertion(with: error)
+        }
+    }
+    
+    func test_save_insertionCompletesWithSuceessNoError() {
+        
+        let (store,sut) = makeSUT()
+        expect(sut, completewithError:nil) {
+            store.completeDeleteSuccess()
+            store.completeInsertionSuccess()
+        }
+    }
+    
+    func test_save_shouldNotDeliverErrorOnceInstanceDeallocated() {
+        let store = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
+        
+        var receivedResults = [LocalFeedLoader.SaveResult]()
+        sut?.save(uniqueTouplefeed().local) { receivedResults.append($0) }
+        
+        sut = nil
+        store.completeDelete(with: anyNSError())
+        
+        XCTAssertTrue(receivedResults.isEmpty)
+        
+    }
+    
+    func test_save_shouldNotCcaheandDeliverErrorOnceInstanceDeallocated() {
+        let store = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
+        
+        var receivedResults = [LocalFeedLoader.SaveResult]()
+        sut?.save(uniqueTouplefeed().local) { receivedResults.append($0) }
+        
+        
+        store.completeDeleteSuccess()
+        sut = nil
+        store.completeInsertionSuccess()
+        
+        XCTAssertTrue(receivedResults.isEmpty)
+        
     }
     
     
@@ -114,20 +119,79 @@ final class CacheFeedLoaderTests: XCTestCase {
         }
     }
     
-}
-
-extension CacheFeedLoaderTests {
+    private class FeedStoreSpy: FeedStore {
+        
+        enum ReceivedMessage: Equatable {
+            case deleteCaheFeed
+            case insert([LocalFeedItem], Date)
+        }
+        
+        typealias DeleteCompletion = (Error?) -> Void
+        typealias InsertCompletion = (Error?) -> Void
+        
+        private(set) var receivedMessages = [ReceivedMessage]()
+        
+        private var deleteCompletions = [DeleteCompletion]()
+        private var insertCompletions = [InsertCompletion]()
+        
+        func deleteCahedFeed(completion: @escaping(DeleteCompletion)) {
+            deleteCompletions.append(completion)
+            receivedMessages.append(.deleteCaheFeed)
+        }
+        
+        func completeDelete(with error: Error, at Index:Int = 0) {
+            deleteCompletions[Index](error)
+        }
+        
+        func completeDeleteSuccess(at Index:Int = 0) {
+            deleteCompletions[Index](nil)
+        }
+        
+        func insert(_ feed: [LocalFeedItem], timeStamp: Date, completion: @escaping InsertCompletion) {
+            insertCompletions.append(completion)
+            receivedMessages.append(.insert(feed, timeStamp))
+        }
+        
+        func completeInsertion(with error: Error, at Index:Int = 0) {
+            insertCompletions[Index](error)
+        }
+        
+        func completeInsertionSuccess(at Index:Int = 0) {
+            insertCompletions[Index](nil)
+        }
+    }
     
-    func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStore, LocalFeedLoader) {
-        let store = FeedStore()
+    func expect(_ sut: LocalFeedLoader, completewithError expectedError:(NSError?), with action:()-> Void, file:StaticString = #file, line: UInt = #line) {
+        
+        var receivedError: Error?
+        
+        let expectation = expectation(description: "Wait for completion to finish")
+        sut.save(uniqueTouplefeed().local) {
+            error in
+            receivedError = error
+            expectation.fulfill()
+        }
+        action()
+        
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(receivedError as NSError?, expectedError)
+    }
+    
+    private func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStoreSpy, LocalFeedLoader) {
+        let store = FeedStoreSpy()
         let sut = LocalFeedLoader(store: store, currentDate: currentDate)
         trackMemoryLeak(store)
         trackMemoryLeak(sut)
         return (store, sut)
     }
     
-    func uniqueItems() -> FeedItem {
+    func uniquefeed() -> FeedItem {
         return FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())
+    }
+    
+    func uniqueTouplefeed() -> (model:[FeedItem],local:[LocalFeedItem]) {
+        let feeds = [FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())]
+        return (feeds,feeds.toLocal())
     }
     
     func anyURL() -> URL {
@@ -136,5 +200,11 @@ extension CacheFeedLoaderTests {
     
     private func anyNSError() -> NSError {
         return NSError(domain: "any error", code: 1)
+    }
+}
+
+extension Array where Element == FeedItem {
+    func toLocal() -> [LocalFeedItem] {
+        return map { LocalFeedItem(id: $0.id,description: $0.description,location: $0.location, imageURL: $0.imageURL) }
     }
 }
