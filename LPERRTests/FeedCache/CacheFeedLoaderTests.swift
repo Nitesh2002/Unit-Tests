@@ -119,6 +119,47 @@ final class CacheFeedLoaderTests: XCTestCase {
         }
     }
     
+    func expect(_ sut: LocalFeedLoader, completewithError expectedError:(NSError?), with action:()-> Void, file:StaticString = #file, line: UInt = #line) {
+        
+        var receivedError: Error?
+        
+        let expectation = expectation(description: "Wait for completion to finish")
+        sut.save(uniqueTouplefeed().local) {
+            error in
+            receivedError = error
+            expectation.fulfill()
+        }
+        action()
+        
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(receivedError as NSError?, expectedError)
+    }
+    
+    private func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStoreSpy, LocalFeedLoader) {
+        let store = FeedStoreSpy()
+        let sut = LocalFeedLoader(store: store, currentDate: currentDate)
+        trackMemoryLeak(store)
+        trackMemoryLeak(sut)
+        return (store, sut)
+    }
+    
+    func uniquefeed() -> FeedItem {
+        return FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())
+    }
+    
+    func uniqueTouplefeed() -> (model:[FeedItem],local:[LocalFeedItem]) {
+        let feeds = [FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())]
+        return (feeds,feeds.toLocal())
+    }
+    
+    func anyURL() -> URL {
+        return URL(string: "https://any-url.com")!
+    }
+    
+    private func anyNSError() -> NSError {
+        return NSError(domain: "any error", code: 1)
+    }
+    
     private class FeedStoreSpy: FeedStore {
         
         enum ReceivedMessage: Equatable {
@@ -159,47 +200,6 @@ final class CacheFeedLoaderTests: XCTestCase {
         func completeInsertionSuccess(at Index:Int = 0) {
             insertCompletions[Index](nil)
         }
-    }
-    
-    func expect(_ sut: LocalFeedLoader, completewithError expectedError:(NSError?), with action:()-> Void, file:StaticString = #file, line: UInt = #line) {
-        
-        var receivedError: Error?
-        
-        let expectation = expectation(description: "Wait for completion to finish")
-        sut.save(uniqueTouplefeed().local) {
-            error in
-            receivedError = error
-            expectation.fulfill()
-        }
-        action()
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, expectedError)
-    }
-    
-    private func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStoreSpy, LocalFeedLoader) {
-        let store = FeedStoreSpy()
-        let sut = LocalFeedLoader(store: store, currentDate: currentDate)
-        trackMemoryLeak(store)
-        trackMemoryLeak(sut)
-        return (store, sut)
-    }
-    
-    func uniquefeed() -> FeedItem {
-        return FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())
-    }
-    
-    func uniqueTouplefeed() -> (model:[FeedItem],local:[LocalFeedItem]) {
-        let feeds = [FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())]
-        return (feeds,feeds.toLocal())
-    }
-    
-    func anyURL() -> URL {
-        return URL(string: "https://any-url.com")!
-    }
-    
-    private func anyNSError() -> NSError {
-        return NSError(domain: "any error", code: 1)
     }
 }
 
