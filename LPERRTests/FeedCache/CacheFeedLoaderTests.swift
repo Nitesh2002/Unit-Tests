@@ -10,201 +10,139 @@ import LPERR
 
 final class CacheFeedLoaderTests: XCTestCase {
     
-    func test_init_DoesnotMessageUponCreation() {
-        let (store,_) = makeSUT()
+    func test_init_doesNotMessageStoreUponCreation() {
+        let (_, store) = makeSUT()
+
         XCTAssertEqual(store.receivedMessages, [])
     }
     
-    func test_save_requestCacheDeletion() {
-        let (store,sut) = makeSUT()
-        sut.save(uniqueTouplefeed().local) { _ in }
-        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed])
-    }
-    
-    func test_save_doesnotInsertWhenDeletionFailedWithError() {
-        let (store,sut) = makeSUT()
-        sut.save(uniqueTouplefeed().local) { _ in }
-        let error = anyNSError()
-        store.completeDelete(with: error)
+    func test_save_requestsCacheDeletion() {
+        let (sut, store) = makeSUT()
+
+        sut.save(uniqueImageFeed().models) { _ in }
         
-        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed])
+        XCTAssertEqual(store.receivedMessages, [.deleteCachedFeed])
     }
     
-    func test_save_requestInsertWhenDeleteSucceeded() {
+    func test_save_doesNotRequestCacheInsertionOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let deletionError = anyNSError()
+        
+        sut.save(uniqueImageFeed().models) { _ in }
+        store.completeDeletion(with: deletionError)
+        
+        XCTAssertEqual(store.receivedMessages, [.deleteCachedFeed])
+    }
+    
+    func test_save_requestsNewCacheInsertionWithTimestampOnSuccessfulDeletion() {
         let timestamp = Date()
-        let (store,sut) = makeSUT { timestamp }
-        let feed = uniqueTouplefeed().local
-        sut.save(feed) { _ in }
-        store.completeDeleteSuccess()
-        XCTAssertEqual(store.receivedMessages, [.deleteCaheFeed, .insert(feed, timestamp)])
-    }
-    
-    func test_save_failsUponDeletionError() {
-        let (store,sut) = makeSUT()
-        let error = anyNSError()
-        expect(sut, completewithError: anyNSError()) {
-            store.completeDelete(with: error)
-        }
-    }
-    
-    func test_save_failsToInsertWithError() {
-        let (store,sut) = makeSUT()
-        let error = anyNSError()
-        expect(sut, completewithError: anyNSError()) {
-            store.completeDeleteSuccess()
-            store.completeInsertion(with: error)
-        }
-    }
-    
-    func test_save_insertionCompletesWithSuceessNoError() {
+        let feed = uniqueImageFeed()
+        let (sut, store) = makeSUT(currentDate: { timestamp })
         
-        let (store,sut) = makeSUT()
-        expect(sut, completewithError:nil) {
-            store.completeDeleteSuccess()
-            store.completeInsertionSuccess()
-        }
+        sut.save(feed.models) { _ in }
+        store.completeDeletionSuccessfully()
+        
+        XCTAssertEqual(store.receivedMessages, [.deleteCachedFeed, .insert(feed.local, timestamp)])
     }
     
-    func test_save_shouldNotDeliverErrorOnceInstanceDeallocated() {
+    func test_save_failsOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let deletionError = anyNSError()
+        
+        expect(sut, toCompleteWithError: deletionError, when: {
+            store.completeDeletion(with: deletionError)
+        })
+    }
+    
+    func test_save_failsOnInsertionError() {
+        let (sut, store) = makeSUT()
+        let insertionError = anyNSError()
+        
+        expect(sut, toCompleteWithError: insertionError, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertion(with: insertionError)
+        })
+    }
+    
+    func test_save_succeedsOnSuccessfulCacheInsertion() {
+        let (sut, store) = makeSUT()
+        
+        expect(sut, toCompleteWithError: nil, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertionSuccessfully()
+        })
+    }
+    
+    func test_save_doesNotDeliverDeletionErrorAfterSUTInstanceHasBeenDeallocated() {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
         
         var receivedResults = [LocalFeedLoader.SaveResult]()
-        sut?.save(uniqueTouplefeed().local) { receivedResults.append($0) }
+        sut?.save(uniqueImageFeed().models) { receivedResults.append($0) }
         
         sut = nil
-        store.completeDelete(with: anyNSError())
+        store.completeDeletion(with: anyNSError())
         
         XCTAssertTrue(receivedResults.isEmpty)
-        
     }
     
-    func test_save_shouldNotCcaheandDeliverErrorOnceInstanceDeallocated() {
+    func test_save_doesNotDeliverInsertionErrorAfterSUTInstanceHasBeenDeallocated() {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
         
         var receivedResults = [LocalFeedLoader.SaveResult]()
-        sut?.save(uniqueTouplefeed().local) { receivedResults.append($0) }
+        sut?.save(uniqueImageFeed().models) { receivedResults.append($0) }
         
-        
-        store.completeDeleteSuccess()
+        store.completeDeletionSuccessfully()
         sut = nil
-        store.completeInsertionSuccess()
+        store.completeInsertion(with: anyNSError())
         
         XCTAssertTrue(receivedResults.isEmpty)
-        
     }
     
+    // MARK: - Helpers
     
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-    
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-    
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
-    func expect(_ sut: LocalFeedLoader, completewithError expectedError:(NSError?), with action:()-> Void, file:StaticString = #file, line: UInt = #line) {
-        
-        var receivedError: Error?
-        
-        let expectation = expectation(description: "Wait for completion to finish")
-        sut.save(uniqueTouplefeed().local) {
-            error in
-            receivedError = error
-            expectation.fulfill()
-        }
-        action()
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, expectedError)
-    }
-    
-    private func makeSUT(currentDate:@escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedStoreSpy, LocalFeedLoader) {
+    private func makeSUT(currentDate: @escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStoreSpy) {
         let store = FeedStoreSpy()
         let sut = LocalFeedLoader(store: store, currentDate: currentDate)
-        trackMemoryLeak(store)
-        trackMemoryLeak(sut)
-        return (store, sut)
+        trackMemoryLeak(store, file: file, line: line)
+        trackMemoryLeak(sut, file: file, line: line)
+        
+        return (sut, store)
     }
     
-    func uniquefeed() -> FeedItem {
-        return FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())
+    private func expect(_ sut: LocalFeedLoader, toCompleteWithError expectedError: NSError?, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for save completion")
+        
+        var receivedError: Error?
+        sut.save(uniqueImageFeed().models) { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        action()
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(receivedError as NSError?, expectedError, file: file, line: line)
+    }
+        
+    private func uniqueImage() -> FeedItem {
+        return FeedItem(id: UUID(), description: "any", location: "any", imageURL: anyURL())
     }
     
-    func uniqueTouplefeed() -> (model:[FeedItem],local:[LocalFeedItem]) {
-        let feeds = [FeedItem(id: UUID(), description: "Any", location: "Any", imageURL: anyURL())]
-        return (feeds,feeds.toLocal())
+    private func uniqueImageFeed() -> (models: [FeedItem], local: [LocalFeedItem]) {
+        let models = [uniqueImage(), uniqueImage()]
+        let local = models.map { LocalFeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL) }
+        return (models, local)
     }
     
-    func anyURL() -> URL {
-        return URL(string: "https://any-url.com")!
+    private func anyURL() -> URL {
+        return URL(string: "http://any-url.com")!
     }
     
     private func anyNSError() -> NSError {
-        return NSError(domain: "any error", code: 1)
+        return NSError(domain: "any error", code: 0)
     }
-    
-    private class FeedStoreSpy: FeedStore {
-        
-        enum ReceivedMessage: Equatable {
-            case deleteCaheFeed
-            case insert([LocalFeedItem], Date)
-        }
-        
-        typealias DeleteCompletion = (Error?) -> Void
-        typealias InsertCompletion = (Error?) -> Void
-        
-        private(set) var receivedMessages = [ReceivedMessage]()
-        
-        private var deleteCompletions = [DeleteCompletion]()
-        private var insertCompletions = [InsertCompletion]()
-        
-        func deleteCahedFeed(completion: @escaping(DeleteCompletion)) {
-            deleteCompletions.append(completion)
-            receivedMessages.append(.deleteCaheFeed)
-        }
-        
-        func completeDelete(with error: Error, at Index:Int = 0) {
-            deleteCompletions[Index](error)
-        }
-        
-        func completeDeleteSuccess(at Index:Int = 0) {
-            deleteCompletions[Index](nil)
-        }
-        
-        func insert(_ feed: [LocalFeedItem], timeStamp: Date, completion: @escaping InsertCompletion) {
-            insertCompletions.append(completion)
-            receivedMessages.append(.insert(feed, timeStamp))
-        }
-        
-        func completeInsertion(with error: Error, at Index:Int = 0) {
-            insertCompletions[Index](error)
-        }
-        
-        func completeInsertionSuccess(at Index:Int = 0) {
-            insertCompletions[Index](nil)
-        }
-    }
+
 }
 
-extension Array where Element == FeedItem {
-    func toLocal() -> [LocalFeedItem] {
-        return map { LocalFeedItem(id: $0.id,description: $0.description,location: $0.location, imageURL: $0.imageURL) }
-    }
-}
