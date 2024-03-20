@@ -74,17 +74,15 @@ final class LoadFeedFromCacheTests: XCTestCase {
         })
     }
     
-    func test_load_deleteionOnRetrivalError() {
-        let (sut, store) = makeSUT()
-        let error = anyNSError()
-        
-        sut.load { _ in }
-        store.completeRetrieval(with: error)
-        
-        XCTAssertEqual(store.receivedMessages, [.retrieve,.deleteCachedFeed])
-    }
+    func test_load_hasNoSideEffectsOnRetrievalError() {
+            let (sut, store) = makeSUT()
+
+            sut.load { _ in }
+            store.completeRetrieval(with: anyNSError())
+            XCTAssertEqual(store.receivedMessages, [.retrieve])
+        }
     
-    func test_load_doesnotdeletecacheonEmptyCacahe() {
+    func  test_load_hasNoSideEffectsOnEmptyCache() {
         let (sut, store) = makeSUT()
         sut.load { _ in }
         store.completeRetrievalWithEmptyCache()
@@ -92,7 +90,7 @@ final class LoadFeedFromCacheTests: XCTestCase {
         XCTAssertEqual(store.receivedMessages, [.retrieve])
     }
     
-    func test_load_doesnotdeletecacheIfcacheislessthansevendaysold() {
+    func test_load_hasNoSideEffectsOnLessThanSevenDaysOldCache() {
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
         let lessThanSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7).adding(seconds: 1)
